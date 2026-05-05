@@ -1,3 +1,5 @@
+import { isNotNumber } from "./utils.ts";
+
 function calculateBmi(height: number, weight: number): string {
     const bmi = weight / ((height / 100) ** 2)
     
@@ -7,4 +9,11 @@ function calculateBmi(height: number, weight: number): string {
     return "Obese" 
 }
 
-console.log(calculateBmi(180, 77))
+const height = process.argv[2];
+const weight = process.argv[3];
+
+if (isNotNumber(height) || isNotNumber(weight) || Number(height) === 0) {
+    throw new Error("Invalid arguments");
+}
+
+console.log(calculateBmi(Number(height), Number(weight)))
