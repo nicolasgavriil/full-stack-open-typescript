@@ -21,7 +21,7 @@ app.get('/bmi', (req, res) => {
     const result = calculateBmi(Number(params.height), Number(params.weight));
     return res.status(200).json(result);
   } catch(err) {
-    return res.status(500).json({error: "server error"});
+    return res.status(500).json({error: `server error: ${err}`});
   }
   
 });

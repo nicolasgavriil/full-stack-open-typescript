@@ -20,7 +20,7 @@ function calculateExercises(exerciseHours: number[], targetHours: number): Exerc
         1: "Not even halfway there",
         2: "Not bad but you didn't reach your target",
         3: "Good job",
-    }
+    };
     let rating;
     let success = false;
     if (completion < 0.5) {
@@ -40,7 +40,7 @@ function calculateExercises(exerciseHours: number[], targetHours: number): Exerc
         ratingDescription: ratingDescription[rating],
         target: targetHours,
         average: averageHours,
-    }
+    };
 }
 
 const targetHours = process.argv[2];
