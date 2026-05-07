@@ -1,5 +1,3 @@
-import { isNotNumber } from "./utils.ts";
-
 interface ExerciseData {
     periodLength: number;
     trainingDays: number;
@@ -10,7 +8,7 @@ interface ExerciseData {
     average: number;
 }
 
-function calculateExercises(exerciseHours: number[], targetHours: number): ExerciseData {
+export function calculateExercises(exerciseHours: number[], targetHours: number): ExerciseData {
     const periodLength = exerciseHours.length;
     const trainingDays = exerciseHours.filter(h => h > 0).length;
     const totalHours = exerciseHours.reduce((acc, current) => acc + current, 0);
@@ -43,16 +41,12 @@ function calculateExercises(exerciseHours: number[], targetHours: number): Exerc
     };
 }
 
-const targetHours = process.argv[2];
-const exerciseHours = process.argv.slice(3);
-if (!targetHours || exerciseHours.length === 0) throw new Error("Missing arguments");
-
-
-if (isNotNumber(targetHours)) throw new Error("Target hours must be a number");
-
-for (const hours of exerciseHours) {
-    if (isNotNumber(hours)) throw new Error("Exercise hours must be a number");
+if (process.argv[1] === import.meta.filename) {
+    const targetHours = process.argv[2];
+    const exerciseHours = process.argv.slice(3);
+    console.log(calculateExercises(exerciseHours.map((eH) => Number(eH)), Number(targetHours)));
 }
 
 
-console.log(calculateExercises(exerciseHours.map((eH) => Number(eH)), Number(targetHours)));
+
+
