@@ -1,22 +1,16 @@
+import type { CoursePart } from "../types.ts";
+import Part from "./Part.tsx";
+
 interface Props {
-  courseParts: {
-    name: string;
-    exerciseCount: number;
-  }[];
+  courseParts: CoursePart[];
 }
 
 const Content = ({ courseParts }: Props) => {
   return (
     <div>
-      <p>
-        {courseParts[0].name} {courseParts[0].exerciseCount}
-      </p>
-      <p>
-        {courseParts[1].name} {courseParts[1].exerciseCount}
-      </p>
-      <p>
-        {courseParts[2].name} {courseParts[2].exerciseCount}
-      </p>
+      {courseParts.map((cP) => (
+        <Part key={cP.name} coursePart={cP} />
+      ))}
     </div>
   );
 };
