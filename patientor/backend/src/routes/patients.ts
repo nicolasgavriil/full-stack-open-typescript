@@ -15,7 +15,7 @@ router.post(
   newPatientParser,
   (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
     const addedPatient = patientService.addPatient(req.body);
-    res.status(201).json(addedPatient);
+    res.status(200).json(addedPatient);
   },
 );
 
