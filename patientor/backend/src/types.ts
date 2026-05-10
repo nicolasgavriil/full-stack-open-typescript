@@ -15,6 +15,10 @@ export const Gender = {
 
 export type Gender = (typeof Gender)[keyof typeof Gender];
 
+export interface Entry {
+  id: string;
+}
+
 export type Patient = {
   id: string;
   name: string;
@@ -22,8 +26,9 @@ export type Patient = {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: Entry[];
 };
 
-export type NonSensitivePatient = Omit<Patient, "ssn">;
+export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">;
 
 export type NewPatient = z.infer<typeof NewPatientSchema>;

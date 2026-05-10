@@ -2,11 +2,11 @@
   "terminal.integrated.profiles.linux": {
     "Backend": {
       "path": "/bin/bash",
-      "args": ["-c", "cd flightdiaries && cd backend && exec bash"]
+      "args": ["-c", "cd patientor && cd backend && exec bash"]
     },
     "Frontend": {
       "path": "/bin/bash",
-      "args": ["-c", "cd flightdiaries && cd frontend && exec bash"]
+      "args": ["-c", "cd patientor && cd frontend && exec bash"]
     }
   }
 }
