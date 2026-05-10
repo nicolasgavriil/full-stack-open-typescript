@@ -22,8 +22,8 @@ export type Visibility = (typeof Visibility)[keyof typeof Visibility];
 export interface DiaryEntry {
   id: number;
   date: string;
-  weather: string;
-  visibility: string;
+  weather: Weather;
+  visibility: Visibility;
   comment?: string;
 }
 
