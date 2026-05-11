@@ -29,30 +29,45 @@ const PatientPage = () => {
   }
 
   return (
-    <Box sx={{ mt: 3 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Typography variant="h4" component="h2" fontWeight="bold">
-          {patient.name}
-        </Typography>
+    <>
+      <Box sx={{ mt: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="h4" component="h2" fontWeight="bold">
+            {patient.name}
+          </Typography>
 
-        {patient.gender === "female" && <FemaleIcon fontSize="large" />}
-        {patient.gender === "male" && <MaleIcon fontSize="large" />}
+          {patient.gender === "female" && <FemaleIcon fontSize="large" />}
+          {patient.gender === "male" && <MaleIcon fontSize="large" />}
+        </Box>
+
+        <Box sx={{ mt: 2 }}>
+          <Typography>
+            <strong>ssn:</strong> {patient.ssn}
+          </Typography>
+
+          <Typography>
+            <strong>occupation:</strong> {patient.occupation}
+          </Typography>
+
+          <Typography>
+            <strong>date of birth:</strong> {patient.dateOfBirth}
+          </Typography>
+        </Box>
       </Box>
-
-      <Box sx={{ mt: 2 }}>
-        <Typography>
-          <strong>ssn:</strong> {patient.ssn}
-        </Typography>
-
-        <Typography>
-          <strong>occupation:</strong> {patient.occupation}
-        </Typography>
-
-        <Typography>
-          <strong>date of birth:</strong> {patient.dateOfBirth}
-        </Typography>
-      </Box>
-    </Box>
+      <Typography variant="h6" component="h3" fontWeight="bold" mt={1}>
+        Entries
+      </Typography>
+      {patient.entries.map((e) => (
+        <div key={e.id}>
+          {e.date} <i>{e.description}</i>
+          <ul>
+            {e.diagnosisCodes?.map((code) => (
+              <li key={code}>{code}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </>
   );
 };
 
