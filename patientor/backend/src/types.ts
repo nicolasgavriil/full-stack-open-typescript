@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { NewPatientSchema } from "./utils.ts";
+import type { NewEntrySchema, NewPatientSchema } from "./schemas.ts";
 
 export type Diagnosis = {
   code: string;
@@ -34,6 +34,8 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+export type NewEntry = z.infer<typeof NewEntrySchema>;
+
 interface BaseEntry {
   id: string;
   description: string;
@@ -42,11 +44,11 @@ interface BaseEntry {
   diagnosisCodes?: Array<Diagnosis["code"]>;
 }
 
-const HealthCheckRating = {
-  Healthy: 0,
-  LowRisk: 1,
-  HighRisk: 2,
-  CriticalRisk: 3,
+export const HealthCheckRating = {
+  Healthy: "0",
+  LowRisk: "1",
+  HighRisk: "2",
+  CriticalRisk: "3",
 } as const;
 
 type HealthCheckRating =

@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { z } from "zod";
-import { NewPatientSchema } from "./utils.ts";
+import { NewEntrySchema, NewPatientSchema } from "./schemas.ts";
 
 export const newPatientParser = (
   req: Request,
@@ -9,6 +9,19 @@ export const newPatientParser = (
 ) => {
   try {
     NewPatientSchema.parse(req.body);
+    next();
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+export const newEntryParser = (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) => {
+  try {
+    NewEntrySchema.parse(req.body);
     next();
   } catch (error: unknown) {
     next(error);
