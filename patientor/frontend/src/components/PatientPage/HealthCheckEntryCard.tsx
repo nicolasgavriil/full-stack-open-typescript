@@ -13,13 +13,13 @@ interface Props {
 const HealthCheckEntryCard = ({ entry, diagnoses }: Props) => {
   const getHealthColor = (rating: HealthCheckEntry["healthCheckRating"]) => {
     switch (rating) {
-      case "0":
+      case 0:
         return "success";
-      case "1":
+      case 1:
         return "info";
-      case "2":
+      case 2:
         return "warning";
-      case "3":
+      case 3:
         return "error";
       default:
         return "default";
@@ -28,13 +28,13 @@ const HealthCheckEntryCard = ({ entry, diagnoses }: Props) => {
 
   const getHealthLabel = (rating: HealthCheckEntry["healthCheckRating"]) => {
     switch (rating) {
-      case "0":
+      case 0:
         return "Healthy";
-      case "1":
+      case 1:
         return "Low risk";
-      case "2":
+      case 2:
         return "High risk";
-      case "3":
+      case 3:
         return "Critical risk";
       default:
         return "Unknown";

@@ -1,3 +1,7 @@
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export interface Diagnosis {
   code: string;
   name: string;
@@ -27,6 +31,8 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+export type NewEntry = UnionOmit<Entry, "id">;
+
 interface BaseEntry {
   id: string;
   description: string;
@@ -36,13 +42,13 @@ interface BaseEntry {
 }
 
 const HealthCheckRating = {
-  Healthy: "0",
-  LowRisk: "1",
-  HighRisk: "2",
-  CriticalRisk: "3",
+  Healthy: 0,
+  LowRisk: 1,
+  HighRisk: 2,
+  CriticalRisk: 3,
 } as const;
 
-type HealthCheckRating =
+export type HealthCheckRating =
   (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
 
 export interface HealthCheckEntry extends BaseEntry {

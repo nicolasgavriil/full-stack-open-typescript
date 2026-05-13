@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Gender, HealthCheckRating } from "./types.ts";
+import { Gender } from "./types.ts";
 
 export const NewPatientSchema = z.object({
   ssn: z.string(),
@@ -18,7 +18,12 @@ const BaseNewEntrySchema = z.object({
 
 const NewHealthCheckEntrySchema = BaseNewEntrySchema.extend({
   type: z.literal("HealthCheck"),
-  healthCheckRating: z.enum(HealthCheckRating),
+  healthCheckRating: z.union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+  ]),
 });
 
 const NewOccupationalHealthcareEntrySchema = BaseNewEntrySchema.extend({

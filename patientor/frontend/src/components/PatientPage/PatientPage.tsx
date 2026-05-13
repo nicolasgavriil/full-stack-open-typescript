@@ -1,11 +1,12 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
-import { Box, Typography } from "@mui/material";
 import type { Diagnosis, Patient } from "../../types";
-import { useParams } from "react-router-dom";
 import patientService from "../../services/patients";
-import { useEffect, useState } from "react";
 import EntryDetails from "./EntryDetails.tsx";
+import NewEntryForm from "./NewEntryForm.tsx";
 
 interface PatientPageProps {
   diagnoses: Diagnosis[];
@@ -28,6 +29,8 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
     };
     fetchPatient();
   }, [id]);
+
+  if (!id) return;
 
   if (!patient) {
     return <div>Loading...</div>;
@@ -59,6 +62,7 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
           </Typography>
         </Box>
       </Box>
+      <NewEntryForm type="HealthCheck" patientId={id} />
       <Typography variant="h6" component="h3" fontWeight="bold" mt={1}>
         Entries
       </Typography>
