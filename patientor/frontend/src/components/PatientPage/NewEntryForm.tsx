@@ -16,27 +16,41 @@ import {
 import patientService from "../../services/patients.ts";
 
 import axios from "axios";
-import type { Diagnosis } from "../../types.ts";
+import type {
+  Diagnosis,
+  Entry,
+  HealthCheckRating,
+  NewEntry,
+} from "../../types.ts";
 
 interface NewEntryFormProps {
   patientId: string;
   diagnoses: Diagnosis[];
+  onCancel: () => void;
+  onEntryAdded: (entry: Entry) => void;
 }
 
-const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
+type EntryType = "HealthCheck" | "OccupationalHealthcare" | "Hospital";
+
+const NewEntryForm = ({
+  diagnoses,
+  patientId,
+  onCancel,
+  onEntryAdded,
+}: NewEntryFormProps) => {
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [specialist, setSpecialist] = useState("");
 
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
-  const [healthRating, setHealthRating] = useState("");
+  const [healthRating, setHealthRating] = useState("0");
   const [employerName, setEmployerName] = useState("");
   const [sickLeaveStart, setSickLeaveStart] = useState("");
   const [sickLeaveEnd, setSickLeaveEnd] = useState("");
   const [dischargeDate, setDischargeDate] = useState("");
   const [dischargeCriteria, setDischargeCriteria] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [type, setType] = useState("HealthCheck");
+  const [type, setType] = useState<EntryType>("HealthCheck");
 
   const showError = (message: string) => {
     setError(message);
@@ -50,7 +64,7 @@ const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
     setDescription("");
     setSpecialist("");
     setDiagnosisCodes([]);
-    setHealthRating("");
+    setHealthRating("0");
     setEmployerName("");
     setSickLeaveStart("");
     setSickLeaveEnd("");
@@ -58,7 +72,7 @@ const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
     setDischargeCriteria("");
   };
 
-  const buildEntryObject = () => {
+  const buildEntryObject = (): NewEntry => {
     const base = {
       date,
       description,
@@ -73,7 +87,7 @@ const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
         return {
           ...base,
           type: "HealthCheck",
-          healthCheckRating: Number(healthRating),
+          healthCheckRating: Number(healthRating) as HealthCheckRating,
         };
 
       case "OccupationalHealthcare":
@@ -108,8 +122,8 @@ const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
     e.preventDefault();
     try {
       const entryToAdd = buildEntryObject();
-      console.log("entry:", entryToAdd);
-      await patientService.addEntry(entryToAdd, patientId);
+      const addedEntry = await patientService.addEntry(entryToAdd, patientId);
+      onEntryAdded(addedEntry);
       resetFields();
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
@@ -122,8 +136,6 @@ const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
       }
     }
   };
-
-  const onCancel = () => {};
 
   const handleDiagnosisCodeChange = (
     e: SelectChangeEvent<typeof diagnosisCodes>,
@@ -158,7 +170,7 @@ const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
         select
         label="Entry type"
         value={type}
-        onChange={(e) => setType(e.target.value)}
+        onChange={(e) => setType(e.target.value as EntryType)}
         fullWidth
         size="small"
         sx={{ mb: 1 }}
@@ -325,7 +337,7 @@ const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
           Add
         </Button>
 
-        <Button variant="outlined" onClick={onCancel}>
+        <Button type="button" variant="outlined" onClick={onCancel}>
           Cancel
         </Button>
       </Box>

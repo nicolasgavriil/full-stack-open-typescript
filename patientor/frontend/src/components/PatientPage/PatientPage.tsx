@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
-import type { Diagnosis, Patient } from "../../types";
+import type { Diagnosis, Entry, Patient } from "../../types";
 import patientService from "../../services/patients";
 import EntryDetails from "./EntryDetails.tsx";
 import NewEntryForm from "./NewEntryForm.tsx";
@@ -15,6 +15,7 @@ interface PatientPageProps {
 const PatientPage = ({ diagnoses }: PatientPageProps) => {
   const { id } = useParams();
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [entryFormVisible, setEntryFormVisible] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -35,6 +36,19 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
   if (!patient) {
     return <div>Loading...</div>;
   }
+
+  const onEntryAdded = (entry: Entry) => {
+    setPatient((prev) =>
+      prev
+        ? {
+            ...prev,
+            entries: prev.entries.concat(entry),
+          }
+        : prev,
+    );
+
+    setEntryFormVisible(false);
+  };
 
   return (
     <>
@@ -62,7 +76,25 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
           </Typography>
         </Box>
       </Box>
-      <NewEntryForm patientId={id} diagnoses={diagnoses} />
+      {!entryFormVisible && (
+        <Button
+          variant="contained"
+          onClick={() => setEntryFormVisible(true)}
+          sx={{ mt: 2, mb: 2 }}
+        >
+          Add New Entry
+        </Button>
+      )}
+
+      {entryFormVisible && (
+        <NewEntryForm
+          patientId={patient.id}
+          diagnoses={diagnoses}
+          onCancel={() => setEntryFormVisible(false)}
+          onEntryAdded={onEntryAdded}
+        />
+      )}
+
       <Typography variant="h6" component="h3" fontWeight="bold" mt={1}>
         Entries
       </Typography>
