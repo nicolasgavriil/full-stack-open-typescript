@@ -62,7 +62,7 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
           </Typography>
         </Box>
       </Box>
-      <NewEntryForm type="HealthCheck" patientId={id} />
+      <NewEntryForm patientId={id} diagnoses={diagnoses} />
       <Typography variant="h6" component="h3" fontWeight="bold" mt={1}>
         Entries
       </Typography>

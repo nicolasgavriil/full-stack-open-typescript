@@ -4,24 +4,31 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
+  FormControl,
+  InputLabel,
   MenuItem,
+  Select,
+  type SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
 import patientService from "../../services/patients.ts";
 
 import axios from "axios";
+import type { Diagnosis } from "../../types.ts";
 
 interface NewEntryFormProps {
   patientId: string;
+  diagnoses: Diagnosis[];
 }
 
-const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
+const NewEntryForm = ({ diagnoses, patientId }: NewEntryFormProps) => {
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [specialist, setSpecialist] = useState("");
 
-  const [diagnosisCodes, setDiagnosisCodes] = useState("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   const [healthRating, setHealthRating] = useState("");
   const [employerName, setEmployerName] = useState("");
   const [sickLeaveStart, setSickLeaveStart] = useState("");
@@ -42,7 +49,7 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
     setDate("");
     setDescription("");
     setSpecialist("");
-    setDiagnosisCodes("");
+    setDiagnosisCodes([]);
     setHealthRating("");
     setEmployerName("");
     setSickLeaveStart("");
@@ -52,17 +59,12 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
   };
 
   const buildEntryObject = () => {
-    const parsedDiagnosisCodes = diagnosisCodes
-      .split(",")
-      .map((code) => code.trim())
-      .filter(Boolean);
-
     const base = {
       date,
       description,
       specialist,
-      ...(parsedDiagnosisCodes.length > 0 && {
-        diagnosisCodes: parsedDiagnosisCodes,
+      ...(diagnosisCodes.length > 0 && {
+        diagnosisCodes,
       }),
     };
 
@@ -123,6 +125,14 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
 
   const onCancel = () => {};
 
+  const handleDiagnosisCodeChange = (
+    e: SelectChangeEvent<typeof diagnosisCodes>,
+  ) => {
+    const value = e.target.value;
+
+    setDiagnosisCodes(typeof value === "string" ? value.split(",") : value);
+  };
+
   return (
     <Box
       component="form"
@@ -161,12 +171,14 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
       </TextField>
       <TextField
         label="Date"
+        type="date"
         required
         fullWidth
         size="small"
         value={date}
         onChange={(e) => setDate(e.target.value)}
         sx={{ mb: 1 }}
+        slotProps={{ inputLabel: { shrink: true } }}
       />
 
       <TextField
@@ -192,12 +204,19 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
       {type === "HealthCheck" && (
         <TextField
           label="Health Check Rating (0-3)"
+          type="number"
           required
           fullWidth
           size="small"
           value={healthRating}
           onChange={(e) => setHealthRating(e.target.value)}
           sx={{ mb: 1 }}
+          slotProps={{
+            htmlInput: {
+              min: 0,
+              max: 3,
+            },
+          }}
         />
       )}
 
@@ -220,20 +239,24 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
             <Box sx={{ display: "flex", gap: 1 }}>
               <TextField
                 label="Start date"
+                type="date"
                 size="small"
                 fullWidth
                 value={sickLeaveStart}
                 onChange={(e) => setSickLeaveStart(e.target.value)}
                 sx={{ mb: 1 }}
+                slotProps={{ inputLabel: { shrink: true } }}
               />
 
               <TextField
                 label="End date"
+                type="date"
                 size="small"
                 fullWidth
                 value={sickLeaveEnd}
                 onChange={(e) => setSickLeaveEnd(e.target.value)}
                 sx={{ mb: 1 }}
+                slotProps={{ inputLabel: { shrink: true } }}
               />
             </Box>
           </Box>
@@ -249,16 +272,20 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
           <Box sx={{ display: "flex", gap: 1 }}>
             <TextField
               label="date"
+              type="date"
               size="small"
+              required
               fullWidth
               value={dischargeDate}
               onChange={(e) => setDischargeDate(e.target.value)}
               sx={{ mb: 1 }}
+              slotProps={{ inputLabel: { shrink: true } }}
             />
 
             <TextField
               label="Criteria"
               size="small"
+              required
               fullWidth
               value={dischargeCriteria}
               onChange={(e) => setDischargeCriteria(e.target.value)}
@@ -268,14 +295,30 @@ const NewEntryForm = ({ patientId }: NewEntryFormProps) => {
         </Box>
       )}
 
-      <TextField
-        label="Diagnosis Codes (comma-separated)"
-        fullWidth
-        size="small"
-        value={diagnosisCodes}
-        onChange={(e) => setDiagnosisCodes(e.target.value)}
-        sx={{ mb: 1.5 }}
-      />
+      <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+        <InputLabel id="diagnosis-codes-label">Diagnosis codes</InputLabel>
+
+        <Select
+          labelId="diagnosis-codes-label"
+          multiple
+          value={diagnosisCodes}
+          label="Diagnosis codes"
+          onChange={handleDiagnosisCodeChange}
+          renderValue={(selected) => (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((code) => (
+                <Chip key={code} label={code} size="small" />
+              ))}
+            </Box>
+          )}
+        >
+          {diagnoses.map((diagnosis) => (
+            <MenuItem key={diagnosis.code} value={diagnosis.code}>
+              {diagnosis.code} — {diagnosis.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       <Box sx={{ display: "flex", gap: 1 }}>
         <Button type="submit" variant="contained">
